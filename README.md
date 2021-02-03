@@ -2,7 +2,7 @@
 
 ## Description
 
-`RankineLab` is a MATLAB tool for the thermodynamic analysis and optimization of Rankine cycles. The code was developed aiming at simplicity and flexibility in terms of cycle configuration and operating conditions. Some of the notable features of the code are listed below:
+`RankineLab` is a MATLAB tool for the thermodynamic analysis and optimization of Rankine cycles. The code was developed aiming at simplicity and flexibility in terms of cycle configurations and operating conditions. Some of the notable features of the code are listed below:
 
 - Supports simple and recuperated Rankine cycle architectures.
 - Supports a wide range of cycle configurations, including: trilateral, partial-evaporation, saturated, superheated, transcritical, and supecritical cycles.
