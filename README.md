@@ -62,11 +62,11 @@ py.CoolProp.CoolProp.PropsSI('T','P',101325,'Q',0,'Water')
 ```
 
 
-If it does not throw and error and returns 373.1243 K the installation was successful.
+If it does not throw and error and returns 373.1243 K, the installation was successful.
 
 ## Getting started
 
-The best way to learn how to use `RankineLab` is to open one of the [examples](.examples) and start playing around with the different parameters and settings. The examples have plenty of comments to guide the users and help them understand how the code works.
+The best way to learn how to use `RankineLab` is to open one of the [examples](examples/) and start playing around with the different parameters and settings. The examples have plenty of comments to guide the users and help them understand how the code works.
 
 ## Mathematical background
 
