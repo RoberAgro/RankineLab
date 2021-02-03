@@ -53,7 +53,7 @@ Open MATLAB (or close and open it if it was already open) and type the following
 pyversion C:\Users\rober\.conda\envs\coolprop_env\python.exe
 ```
 
-Note that, in my case, the executable was located at the path `C:\Users\rober\.conda\envs\coolprop_env\`. You should replace this part with the correct path in your computer.
+Note that, in my case, the executable was located at `C:\Users\rober\.conda\envs\coolprop_env\`. You should replace this part with the correct path in your computer.
 
 Good! You have installed CoolProp and interfaced it with MATLAB. Let's do a simple test to check if the installation was successful. We are going to use CoolProp to compute the saturation temperature of water at atmospheric pressure. Just type the following command in MATLAB: 
 
