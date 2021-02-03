@@ -14,7 +14,6 @@
 <figure>
 	<img src="./docs/rankine_cycle_diagrams.svg" width="750"/> 
 </figure>
-Process flowsheet and _T_-_s_ diagram of a recuperated Rankine cycle
 
 ## Installation
 
