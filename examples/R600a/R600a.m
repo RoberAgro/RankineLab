@@ -110,20 +110,30 @@ eta_pump_c = 0.80;                                                         % Ise
 
 % Define the efficiency of the expander
 eta_expander = 0.85;                                                       % Efficiency of the expander
-eta_expander_definition = 'isentropic';                                    % Definition of the expander efficiency: 'isentropic' or 'polytropic'
 
-% More details about the expander efficiency definition
+% Turbomachinery efficiency definition
+pump_efficiency_definition = 'isentropic';                                 % Definition of the pump efficiency: 'isentropic' or 'polytropic'
+expander_efficiency_definition = 'isentropic';                             % Definition of the expander efficiency: 'isentropic' or 'polytropic'
+
+% More details about the efficiency definition
 %{
 
-If you set eta_exp_type = 'isentropic' the efficiency of the turbine is
-defined as eta = (h_6-h_7)/(h_6-h(s_6,p_7)) and the expandercomputation 
-only involves the inlet and exit states
+If you set efficiency_definition='isentropic' the efficiency of the
+working fluid pump and expander are defined as:
+    
+   eta_pump = (h_out_s-h_in)/(h_out-h_in)
+   eta_expander = (h_in-h_out)/(h_in-h_out_s)
 
-If you set eta_exp_type = 'polytropic' the efficiency of the turbine is
-defined as eta = dh/dh_s = d*dh/dp and the expander computation solves the
-previous ordinary differential equation (ODE) along the expansion
+and the turbomachinery computations only involve the inlet and exit states
 
-Check the function evaluate_expander.m to see the implementation details
+If you set efficiency_definition='polytropic' the efficiency of the working
+fluid pump and expander are defined as:
+
+   eta_pump = dh_s/dh = 1/d*dp/dh
+   eta_expander = dh/dh_s = d*dh/dp
+
+and the turbomachinery computations are performed by solving the previous
+ordinary differential equations (ODE) along the compression or expansion
 
 %}
 

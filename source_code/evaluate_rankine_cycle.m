@@ -41,7 +41,8 @@ eta_pump_h = fixed_parameters.components.eta_pump_h;
 eta_pump_f = fixed_parameters.components.eta_pump_f;
 eta_pump_c = fixed_parameters.components.eta_pump_c;
 eta_expander = fixed_parameters.components.eta_expander;
-eta_expander_definition = fixed_parameters.components.eta_expander_definition;
+pump_efficiency_definition = fixed_parameters.components.pump_efficiency_definition;
+expander_efficiency_definition = fixed_parameters.components.expander_efficiency_definition;
 
 % Load fluid properties
 p_0 = fixed_parameters.properties.p_0;
@@ -96,7 +97,7 @@ s_3 = prop_calculation('S','T',T_3,'P',p_3,heating_fluid);
 
 % State 2 (heat source pump inlet)
 p_2 = p_1*(1-dp_h_evap);
-[h_2,p_pump_h,h_pump_h,T_pump_h,s_pump_h,d_pump_h] = evaluate_compressor(heating_fluid,h_3,p_3,p_2,eta_pump_h,calc_detail);
+[h_2,p_pump_h,h_pump_h,T_pump_h,s_pump_h,d_pump_h] = evaluate_compressor(heating_fluid,h_3,p_3,p_2,eta_pump_h,'isentropic',calc_detail);
 T_2 = prop_calculation('T','H',h_2,'P',p_2,heating_fluid);
 s_2 = prop_calculation('S','H',h_2,'P',p_2,heating_fluid);
 d_2 = prop_calculation('D','H',h_2,'P',p_2,heating_fluid);
@@ -109,7 +110,7 @@ d_4 = prop_calculation('D','P',p_4,'H',h_4,working_fluid);
 % State 5 (pump outlet)
 p_6 = p_7/(1-dp_c_evap);
 p_5 = p_6/(1-dp_c_rec);
-[h_5,p_pump_f,h_pump_f,T_pump_f,s_pump_f,d_pump_f] = evaluate_compressor(working_fluid,h_4,p_4,p_5,eta_pump_f,calc_detail);
+[h_5,p_pump_f,h_pump_f,T_pump_f,s_pump_f,d_pump_f] = evaluate_compressor(working_fluid,h_4,p_4,p_5,eta_pump_f,pump_efficiency_definition,calc_detail);
 T_5 = prop_calculation('T','P',p_5,'H',h_5,working_fluid);
 s_5 = prop_calculation('S','P',p_5,'H',h_5,working_fluid);
 d_5 = prop_calculation('D','P',p_5,'H',h_5,working_fluid);
@@ -122,7 +123,7 @@ d_7 = prop_calculation('D','P',p_7,'H',h_7,working_fluid);
 % State 8 (expander outlet)
 p_9 = p_4/(1-dp_h_cond);
 p_8 = p_9/(1-dp_h_rec);
-[h_8,p_exp,h_exp,T_exp,s_exp,d_exp] = evaluate_expander(working_fluid,h_7,p_7,p_8,eta_expander,eta_expander_definition,calc_detail);
+[h_8,p_exp,h_exp,T_exp,s_exp,d_exp] = evaluate_expander(working_fluid,h_7,p_7,p_8,eta_expander,expander_efficiency_definition,calc_detail);
 T_8 = prop_calculation('T','P',p_8,'H',h_8,working_fluid);
 s_8 = prop_calculation('S','P',p_8,'H',h_8,working_fluid);
 d_8 = prop_calculation('D','P',p_8,'H',h_8,working_fluid);
@@ -152,7 +153,7 @@ d_10 = prop_calculation('D','T',T_10,'P',p_10,cooling_fluid);
 
 % State 11 (heat sink pump outlet)
 p_11 = p_12/(1-dp_c_cond);
-[h_11,p_pump_c,h_pump_c,T_pump_c,s_pump_c,d_pump_c] = evaluate_compressor(cooling_fluid,h_10,p_10,p_11,eta_pump_c,calc_detail);
+[h_11,p_pump_c,h_pump_c,T_pump_c,s_pump_c,d_pump_c] = evaluate_compressor(cooling_fluid,h_10,p_10,p_11,eta_pump_c,'isentropic',calc_detail);
 T_11 = prop_calculation('T','H',h_11,'P',p_11,cooling_fluid);
 s_11 = prop_calculation('S','H',h_11,'P',p_11,cooling_fluid);
 d_11 = prop_calculation('D','H',h_11,'P',p_11,cooling_fluid);

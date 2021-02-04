@@ -1,24 +1,24 @@
-function [h_low,p,h,T,s,d] = evaluate_expander(fluid,h_high,p_high,p_low,eta_expander,eta_expander_definition,calc_detail)
+function [h_low,p,h,T,s,d] = evaluate_expander(fluid,h_high,p_high,p_low,efficiency,efficiency_definition,calc_detail)
 
-if strcmp(eta_expander_definition,'isentropic') == 1
+if strcmp(efficiency_definition,'isentropic') == 1
     
     % Isentropic efficiency computation
     s = prop_calculation('S','P',p_high,'H',h_high,fluid);
     h_low_s = prop_calculation('H','P',p_low,'S',s,fluid);
-    h_low = h_high-(h_high-h_low_s)*eta_expander;
+    h_low = h_high-(h_high-h_low_s)*efficiency;
     p = [p_low p_high]';
     h = [h_low h_high]';
     
-elseif strcmp(eta_expander_definition,'polytropic') == 1
+elseif strcmp(efficiency_definition,'polytropic') == 1
     
     % Polytropic efficiency computation
     options = odeset('RelTol',1e-6,'AbsTol',1e-6);
-    [p,h] = ode45(@(p,h)R(p,h,fluid,eta_expander),linspace(p_high,p_low,25),h_high,options);
+    [p,h] = ode45(@(p,h)R(p,h,fluid,efficiency),linspace(p_high,p_low,25),h_high,options);
     h_low = h(end);
     
 else
     
-    error("The expander efficiency definition must be 'isentropic' or 'polytropic'")
+    error("The efficiency definition must be 'isentropic' or 'polytropic'")
     
 end
     
@@ -36,9 +36,9 @@ end
 
 end
 
-function dhdp = R(p,h,fluid,eta_poly)
+function dhdp = R(p,h,fluid,efficiency)
 rho = prop_calculation('D','P',p,'H',h,fluid);
-dhdp = eta_poly/rho;
+dhdp = efficiency/rho;
 end
 
 % N = 10;

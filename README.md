@@ -71,7 +71,7 @@ The best way to learn how to use `RankineLab` is to open one of the [examples](.
 
 ## Mathematical background
 
-Check out the [technical notes](technical_notes.pdf) if you want to learn more about the formulation of the optimization problem and the thermodynamic modeling behind `RankOpt`.
+Check out the [technical note](RankineLab_technical_note.pdf) if you want to learn more about the formulation of the optimization problem and the thermodynamic modeling behind `RankOpt`.
 
 ## License
 
