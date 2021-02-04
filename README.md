@@ -2,7 +2,7 @@
 
 ## Description
 
-`RankineLab` is a MATLAB tool for the thermodynamic analysis and optimization of Rankine cycles. The code was developed aiming at simplicity and flexibility in terms of cycle configuration and operating conditions. Some of the notable features of the code are listed below:
+`RankineLab` is a MATLAB tool for the thermodynamic analysis and optimization of Rankine cycles. The code was developed aiming at simplicity and flexibility in terms of cycle configurations and operating conditions. Some of the notable features of the code are listed below:
 
 - Supports simple and recuperated Rankine cycle architectures.
 - Supports a wide range of cycle configurations, including: trilateral, partial-evaporation, saturated, superheated, transcritical, and supecritical cycles.
@@ -14,7 +14,6 @@
 <figure>
 	<img src="./docs/rankine_cycle_diagrams.svg" width="750"/> 
 </figure>
-Process flowsheet and _T_-_s_ diagram of a recuperated Rankine cycle
 
 ## Installation
 
@@ -54,7 +53,7 @@ Open MATLAB (or close and open it if it was already open) and type the following
 pyversion C:\Users\rober\.conda\envs\coolprop_env\python.exe
 ```
 
-Note that, in my case, the executable was located at the path `C:\Users\rober\.conda\envs\coolprop_env\`. You should replace this part with the correct path in your computer.
+Note that, in my case, the executable was located at `C:\Users\rober\.conda\envs\coolprop_env\`. You should replace this part with the correct path in your computer.
 
 Good! You have installed CoolProp and interfaced it with MATLAB. Let's do a simple test to check if the installation was successful. We are going to use CoolProp to compute the saturation temperature of water at atmospheric pressure. Just type the following command in MATLAB: 
 
@@ -63,11 +62,11 @@ py.CoolProp.CoolProp.PropsSI('T','P',101325,'Q',0,'Water')
 ```
 
 
-If it does not throw and error and returns 373.1243 K the installation was successful.
+If it does not throw and error and returns 373.1243 K, the installation was successful.
 
 ## Getting started
 
-The best way to learn how to use `RankineLab` is to open one of the [examples](.examples) and start playing around with the different parameters and settings. The examples have plenty of comments to guide the users and help them understand how the code works.
+The best way to learn how to use `RankineLab` is to open one of the [examples](examples/) and start playing around with the different parameters and settings. The examples have plenty of comments to guide the users and help them understand how the code works.
 
 ## Mathematical background
 
