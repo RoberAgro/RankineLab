@@ -1,4 +1,4 @@
-%% Save the cycle parameters in a structure
+%% Save the cycle parameters as a structure
 % Simple script to organize information into an structure
 
 % Thermodynamic boundaries

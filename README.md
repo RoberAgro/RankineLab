@@ -17,7 +17,9 @@
 
 ## Installation
 
-In order to use `RankineLab` you need a MATLAB installation and the MATLAB Optimization Toolbox. In addition you need to install CoolProp and interface it with MATLAB through Python. This may sound complicated, but it is not! Check the step-by-step instructions below to learn how to interface MATLAB with CoolProp in a Windows operating system. The installation for Linux or Mac operating systems would be similar.
+In order to use `RankineLab`, you need a MATLAB installation and the MATLAB Optimization Toolbox. In addition you need to install CoolProp and interface it with MATLAB through Python. This may sound complicated, but it is not!
+
+Check the step-by-step instructions below to learn how to interface MATLAB with CoolProp in a Windows operating system. The installation for Linux or Mac operating systems would be similar.
 
 #### Step 1 - Download and install Miniconda
 
@@ -66,11 +68,11 @@ If it does not throw and error and returns 373.1243 K, the installation was succ
 
 ## Getting started
 
-The best way to learn how to use `RankineLab` is to open one of the [examples](examples/) and start playing around with the different parameters and settings. The examples have plenty of comments to guide the users and help them understand how the code works.
+The best way to learn how to use `RankineLab` is to open one of the [examples](examples/) and start playing around with the different parameters and settings. The examples have plenty of comments to guide the users and help them understand how the code works. You can use the example scripts as a template to start your own projects.
 
 ## Mathematical background
 
-Check out the [technical note](RankineLab_technical_note.pdf) if you want to learn more about the formulation of the optimization problem and the thermodynamic modeling behind `RankOpt`.
+Check out the [technical note](./docs/RankineLab_technical_note.pdf) if you want to learn more about the formulation of the optimization problem and the thermodynamic modeling behind `RankOpt`.
 
 ## License
 
@@ -78,4 +80,4 @@ Check out the [technical note](RankineLab_technical_note.pdf) if you want to lea
 
 ## Contact information
 
-`RankineLab` was developed by [Roberto Agromayor](https://www.ntnu.edu/employees/roberto.agromayor) and of Associate Professor [Lars O. Nord](https://www.ntnu.edu/employees/lars.nord) at the [Norwegian University of Science and Technology (NTNU)](https://www.ntnu.no/). Please, drop us an email to [roberto.agromayor@ntnu.no](mailto:roberto.agromayor@ntnu.no) if you have questions about the code or you have a bug to report!
+`RankineLab` was developed by [Roberto Agromayor](https://www.ntnu.edu/employees/roberto.agromayor) and of [Lars O. Nord](https://www.ntnu.edu/employees/lars.nord) at the [Norwegian University of Science and Technology (NTNU)](https://www.ntnu.no/). Drop us an email to [roberto.agromayor@ntnu.no](mailto:roberto.agromayor@ntnu.no) if you have questions about the code or you have a bug to report!

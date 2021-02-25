@@ -105,9 +105,8 @@ optimization = struct('x',                   [], ...                       % Vec
                       'lb',                  [], ...                       % Vector of upper bounds
                       'ub',                  [], ...                       % Vector of lower bounds
                       'c',                   [], ...                       % Vector of inequality constraints
-                      'c_eq',                [], ...                       % Vector of equality constraints
-                      'check_bounds',        [], ...                       % Visual check of the bounds
-                      'check_constraints',   []);                          % Visual check of the constraints
+                      'c_eq',                []);                          % Vector of equality constraints
+ 
 
 
 % Create the cycle_data structure grouping the sub-structures

@@ -57,14 +57,14 @@ ax_fig.XLim = x_lim;
 ax_fig.YLim = y_lim;
 
 % Save the figure
-name = 'TQ_diagram_';
+name = 'TQ_diagram';
 if save == 1
-    saveas(fig,fullfile(my_path,[name,my_filename,'.pdf']),'pdf')
+    saveas(fig,fullfile(my_path,[my_filename,'_',name,'.pdf']),'pdf')
 elseif save == 2
-%     saveas(fig,fullfile(my_path,[name,my_filename]),'fig')
-%     export_fig(fig,fullfile(my_path,[name,my_filename]),'-png','-r1000')
-%     export_fig(fig,fullfile(my_path,[name,my_filename]),'-eps','-painters')
-    export_fig(fig,fullfile(my_path,[name,my_filename]),'-pdf','-painters')
+%     saveas(fig,fullfile(my_path,[my_filename,'_',name]),'fig')
+%     export_fig(fig,fullfile(my_path,[my_filename,'_',name]),'-png','-r1000')
+%     export_fig(fig,fullfile(my_path,[my_filename,'_',name]),'-eps','-painters')
+    export_fig(fig,fullfile(my_path,[my_filename,'_',name]),'-pdf','-painters')
 elseif save ~= 0
     error('Choose a valid saving option')
 end

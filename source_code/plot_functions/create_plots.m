@@ -1,11 +1,14 @@
-function cycle_data = plot_cycle(x,fixed_parameters,name_suffix)
+function cycle_data = create_plots(x,fixed_parameters,filename_suffix)
+
+% Load setting for beautiful plots
+set_plot_options()
 
 % Evaluate the optimization problem
 fixed_parameters.calc_detail = 'long';
 if nargin == 2
     filename = fixed_parameters.project_name;
 elseif nargin == 3
-    filename = [fixed_parameters.project_name, '_', name_suffix];
+    filename = [fixed_parameters.project_name, '_', filename_suffix];
 else
     error('The number of arguments must be 2 or 3')
 end

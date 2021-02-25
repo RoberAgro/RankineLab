@@ -9,7 +9,7 @@ clear all
 close all
 clc
 
-% Add the path to the RankineLab_source directory
+% Add the path to the 'source_code' directory
 % The function genpath() is very convenient
 addpath(genpath('../../source_code'))
 
@@ -24,9 +24,6 @@ else
     rmdir(results_path, 's')
     mkdir(results_path)
 end
-
-% Load setting for beautiful plots
-set_plot_options
 
 
 %% Define the thermodynamic specifications and cycle parameters
@@ -297,16 +294,16 @@ constraints.pressure.apply = 'yes';
 % 'interior-point' also works, but it requires more iterations
 algorithm = 'sqp';
 
-% Optimization algorithm
+% Compute the problem gradients in parallel or not
 use_parallel = false; % true or false
 
 % Define termination criteria (no need to change in most cases)
 max_iterations       = 1000;
 max_function_evals   = 10000;
-step_tolerance       = 1e-06;
-function_tolerance   = 1e-06;
-optimality_tolerance = 1e-06;
-constraint_tolerance = 1e-06;
+step_tolerance       = 1e-08;
+function_tolerance   = 1e-05;
+constraint_tolerance = 1e-05;
+optimality_tolerance = 1e-05;   
                                   
 % Description of the possible outputs of the optimization function
 %{
@@ -329,7 +326,7 @@ Exitflag =  5 -> Success. Magnitude of directional derivative in search directio
 choose_plots = struct('diagram_TQ',            'yes', ...                  % Temperature - heat duty diagram
                       'diagram_Ts',            'yes', ...                  % Temperature - entropy diagram of the cycle
                       'diagram_Th',            'yes', ...                   % Temperature - enthalpy diagram of the cycle
-                      'save',                  1);                         % Choose wether to save the figure or not.
+                      'save',                  0);                         % Choose whether to save the figures or not
                   
 % Description of the saving options
 %{
@@ -356,7 +353,7 @@ create_problem_structures
 % number of lines of this script to a minimum
 
 % Be tidy and clear the worskpace now that we stored everything
-clearvars -except optimization_problem fixed_parameters
+clearvars -except optimization_problem fixed_parameters project_name results_path
                    
 
 %% Load a previous solution as initial guess
@@ -366,21 +363,19 @@ clearvars -except optimization_problem fixed_parameters
 
 
 %% Plot the initial solution
-cycle_data = plot_cycle(optimization_problem.x0,fixed_parameters, 'initial');
-print_current_solution(cycle_data)
+filename_suffix = 'initial';
+cycle_data = create_plots(optimization_problem.x0,fixed_parameters,filename_suffix);
+print_solution(cycle_data)
 
 
 %% Solve the optimization problem
-tic
 [cycle_data,x_opt,f_opt,exitflag,output,lambda] = solve_optimization_problem(fixed_parameters,optimization_problem);
-t = toc;
-disp(['The optimization problem was solved in ', num2str(t), ' seconds'])
-disp(['The optimization exit flag is ', num2str(exitflag)])
-
+save_solution(cycle_data, project_name, results_path)
 
 %% Plot the optimal solution
-plot_cycle(x_opt,fixed_parameters, 'optimal');
-print_current_solution(cycle_data)
+filename_suffix = 'optimal';
+create_plots(x_opt,fixed_parameters,filename_suffix);
+print_solution(cycle_data)
 
 
 

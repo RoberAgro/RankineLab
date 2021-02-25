@@ -38,7 +38,7 @@ T_pump = cycle_data.pump_f.T-273.15;
 % Prepare the figure
 fig = figure(); ax_fig = gca; 
 hold on; box on;
-pbaspect([1.15 1 1])
+pbaspect([1 1 1])
 % axis square;
 
 % Define the axis limits
@@ -101,14 +101,14 @@ p11 = '$11 \quad$'; text(h_cycle(4),T_cycle(11)+3,  p11, 'HorizontalAlignment', 
 p12 = '$\quad 12$'; text(h_cycle(9),T_cycle(12),    p12, 'HorizontalAlignment', 'left',  'FontSize', font_size-2)
 
 % Save the figure
-name = 'Th_diagram_';
+name = 'Th_diagram';
 if save == 1
-    saveas(fig,fullfile(my_path,[name,my_filename,'.pdf']),'pdf')
+    saveas(fig,fullfile(my_path,[my_filename,'_',name,'.pdf']),'pdf')
 elseif save == 2
-%     saveas(fig,fullfile(my_path,[name,my_filename]),'fig')
-%     export_fig(fig,fullfile(my_path,[name,my_filename]),'-png','-r1000')
-%     export_fig(fig,fullfile(my_path,[name,my_filename]),'-eps','-painters')
-    export_fig(fig,fullfile(my_path,[name,my_filename]),'-pdf','-painters')
+%     saveas(fig,fullfile(my_path,[my_filename,'_',name]),'fig')
+%     export_fig(fig,fullfile(my_path,[my_filename,'_',name]),'-png','-r1000')
+%     export_fig(fig,fullfile(my_path,[my_filename,'_',name]),'-eps','-painters')
+    export_fig(fig,fullfile(my_path,[my_filename,'_',name]),'-pdf','-painters')
 elseif save ~= 0
     error('Choose a valid saving option')
 end

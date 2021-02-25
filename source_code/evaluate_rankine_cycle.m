@@ -637,115 +637,222 @@ cycle_data.checks.energy2 = energy_error2;
 cycle_data.checks.exergy = exergy_error;
 
 
-%% Export the optimization problem variables
-% Degrees of freedom
-cycle_data.optimization.x = x;
+%% Prepare a structure to summarize the optimization problem variables
+% Initialize cells
+header    = {};
+name      = {};
+satisfied = {};
+active    = {};
 
-% Lower bounds
-cycle_data.optimization.lb = [fixed_parameters.lower_bounds.x1,   ...
-                              fixed_parameters.lower_bounds.x2,   ...
-                              fixed_parameters.lower_bounds.x3,   ...
-                              fixed_parameters.lower_bounds.x4,   ...
-                              fixed_parameters.lower_bounds.x5,   ...
-                              fixed_parameters.lower_bounds.x6,   ...
-                              fixed_parameters.lower_bounds.x7]';
+% Define the header names
+header(1) = {'Variable name'};
+header(2) = {'Lower bound'};
+header(3) = {'Value'};
+header(4) = {'Upper bound'};
+header(5) = {'Satisfied'};
+header(6) = {'Active'};
 
-% Upper bounds
-cycle_data.optimization.ub = [fixed_parameters.upper_bounds.x1,   ...
-                              fixed_parameters.upper_bounds.x2,   ...
-                              fixed_parameters.upper_bounds.x3,   ...
-                              fixed_parameters.upper_bounds.x4,   ...
-                              fixed_parameters.upper_bounds.x5,   ...
-                              fixed_parameters.upper_bounds.x6,   ...
-                              fixed_parameters.upper_bounds.x7]';
-                          
-% Optimization constraints
-cycle_data.optimization.c = c_ineq;
-cycle_data.optimization.c_eq = c_eq;
+% Define variable names
+k = 1;
+name(k) = {'Heat source exit temperature'}; k = k+1;
+name(k) = {'Heat sink exit temperature'};   k = k+1;
+name(k) = {'Pump inlet pressure'};          k = k+1;
+name(k) = {'Pump inlet enthalpy'};          k = k+1;
+name(k) = {'Expander inlet pressure'};      k = k+1;
+name(k) = {'Expander inlet enthalpy'};      k = k+1;
+name(k) = {'Recuperator effectiveness'};
 
-% Store bounds information in a cell
-bounds_cell{1,1} = 'Variable name';
-bounds_cell{1,2} = 'Lower bound';
-bounds_cell{1,3} = 'Variable value';
-bounds_cell{1,4} = 'Upper bound'; k = 2;
-bounds_cell(k,1) = {'Heat source exit temperature'}; k = k+1;
-bounds_cell(k,1) = {'Heat sink exit temperature'}; k = k+1;
-bounds_cell(k,1) = {'Pump inlet pressure'}; k = k+1;
-bounds_cell(k,1) = {'Pump inlet enthalpy'}; k = k+1;
-bounds_cell(k,1) = {'Expander inlet pressure'}; k = k+1;
-bounds_cell(k,1) = {'Expander inlet enthalpy'}; k = k+1;
-bounds_cell(k,1) = {'Recuperator effectiveness'};
-bounds_cell(2:k,2) = num2cell(cycle_data.optimization.lb);
-bounds_cell(2:k,3) = num2cell(cycle_data.optimization.x);
-bounds_cell(2:k,4) = num2cell(cycle_data.optimization.ub);
-cycle_data.optimization.check_bounds = bounds_cell;
+% Define the lower bounds
+value_min = [fixed_parameters.lower_bounds.x1,   ...
+             fixed_parameters.lower_bounds.x2,   ...
+             fixed_parameters.lower_bounds.x3,   ...
+             fixed_parameters.lower_bounds.x4,   ...
+             fixed_parameters.lower_bounds.x5,   ...
+             fixed_parameters.lower_bounds.x6,   ...
+             fixed_parameters.lower_bounds.x7]';
+         
+% Define the upper bounds
+value_max = [fixed_parameters.upper_bounds.x1,   ...
+             fixed_parameters.upper_bounds.x2,   ...
+             fixed_parameters.upper_bounds.x3,   ...
+             fixed_parameters.upper_bounds.x4,   ...
+             fixed_parameters.upper_bounds.x5,   ...
+             fixed_parameters.upper_bounds.x6,   ...
+             fixed_parameters.upper_bounds.x7]';
 
-% Store constraints information in a cell
-% Headers
-constraints_cell{1,1} = 'Constraint name';
-constraints_cell{1,2} = 'Lower limit';
-constraints_cell{1,3} = 'Constraint value';
-constraints_cell{1,4} = 'Upper limit';
-constraints_cell{1,5} = 'Applied?'; k = 2;
+% Check if the bounds are satisfied
+N_var = length(value_min);
+for k = 1:N_var
+    if x(k)-value_min(k) >= 0 && value_max(k) - x(k) >= 0
+        satisfied(k) = {'yes'};
+    else
+        satisfied(k) = {'no'};
+    end
+end
+         
+% Check if the bounds are active
+for k = 1:N_var
+    if abs(x(k)-value_min(k)) <= 1e-3 || abs(value_max(k) - x(k)) <= 1e-3
+        active(k) = {'yes'};
+    else
+        active(k) = {'no'};
+    end
+end
+
+% Store cells as a structure
+bounds_summary.header    = header;
+bounds_summary.name      = name;
+bounds_summary.value     = num2cell(x);
+bounds_summary.value_min = num2cell(value_min);
+bounds_summary.value_max = num2cell(value_max);
+bounds_summary.active    = active;
+bounds_summary.satisfied = satisfied;
+
+
+%% Prepare a structure to summarize the optimization problem constraints
+% Initialize cells
+header    = {};
+name      = {};
+value     = {};
+value_min = {};
+value_max = {};
+applied   = {};
+satisfied = {};
+active    = {};
+
+% Define the header names
+header(1) = {'Variable name'};
+header(2) = {'Lower bound'};
+header(3) = {'Value'};
+header(4) = {'Upper bound'};
+header(5) = {'Applied'};
+header(6) = {'Satisfied'};
+header(7) = {'Active'};
 
 % Evaporator minimum temperature difference
-constraints_cell(k,1) = {'Evaporator pinch point'};
-constraints_cell(k,2) = {dT_evap_min};
-constraints_cell(k,3) = {min(dT_evap)};
-constraints_cell(k,4) = {inf};
-constraints_cell(k,5) = {fixed_parameters.constraints.dT_evap.apply}; k = k+1;
+k = 1;
+name(k)      = {'Evaporator pinch point'};
+value(k)     = {min(dT_evap)};
+value_min(k) = {dT_evap_min};
+value_max(k) = {[]};
+applied(k)   = {fixed_parameters.constraints.dT_evap.apply};
 
 % Condenser minimum temperature difference
-constraints_cell(k,1) = {'Condenser pinch point'};
-constraints_cell(k,2) = {dT_cond_min};
-constraints_cell(k,3) = {min(dT_cond)};
-constraints_cell(k,4) = {inf};
-constraints_cell(k,5) = {fixed_parameters.constraints.dT_cond.apply}; k = k+1;
+k = k+1;
+name(k)      = {'Condenser pinch point'};
+value(k)     = {min(dT_cond)};
+value_min(k) = {dT_cond_min};
+value_max(k) = {[]};
+applied(k)   = {fixed_parameters.constraints.dT_cond.apply};
 
 % Recuperator minimum temperature difference
-constraints_cell(k,1) = {'Recuperator pinch point'};
-constraints_cell(k,2) = {dT_rec_min};
-constraints_cell(k,3) = {min(dT_rec)};
-constraints_cell(k,4) = {inf};
-constraints_cell(k,5) = {fixed_parameters.constraints.dT_rec.apply}; k = k+1;
+k = k+1;
+name(k)      = {'Recuperator pinch point'};
+value(k)     = {min(dT_rec)};
+value_min(k) = {dT_rec_min};
+value_max(k) = {[]};
+applied(k)   = {fixed_parameters.constraints.dT_rec.apply};
 
-% Subcooling constraint
-constraints_cell(k,1) = {'Expander vapor quality'};
-constraints_cell(k,2) = {expander_quality_min};
-constraints_cell(k,3) = {min(q_exp)};
-constraints_cell(k,4) = {inf};
-constraints_cell(k,5) = {fixed_parameters.constraints.quality.apply}; k = k+1;
+% Expander vapor quality
+k = k+1;
+name(k)      = {'Expander vapor quality'};
+value(k)     = {min(dT_rec)};
+value_min(k) = {expander_quality_min};
+value_max(k) = {[]};
+applied(k)   = {fixed_parameters.constraints.quality.apply};
 
-% Subcooling constraint
-constraints_cell(k,1) = {'Degree of subcooling'};
-constraints_cell(k,2) = {dT_subcooling_min};
-constraints_cell(k,3) = {dT_subcooling};
-constraints_cell(k,4) = {dT_subcooling_max};
-constraints_cell(k,5) = {fixed_parameters.constraints.dT_subcooling.apply}; k = k+1;
+% Subcooling at the inlet of the pump
+k = k+1;
+name(k)      = {'Degree of subcooling'};
+value(k)     = {dT_subcooling};
+value_min(k) = {dT_subcooling_min};
+value_max(k) = {dT_subcooling_max};
+applied(k)   = {fixed_parameters.constraints.dT_subcooling.apply};
 
-% Superheating constraint
-constraints_cell(k,1) = {'Degree of superheating'};
-constraints_cell(k,2) = {dT_superheating_min};
-constraints_cell(k,3) = {dT_superheating};
-constraints_cell(k,4) = {dT_superheating_max};
-constraints_cell(k,5) = {fixed_parameters.constraints.dT_superheating.apply}; k = k+1;
+% Superheating at the inlet of the expander
+k = k+1;
+name(k)      = {'Degree of superheating'};
+value(k)     = {dT_superheating};
+value_min(k) = {dT_superheating_min};
+value_max(k) = {dT_superheating_max};
+applied(k)   = {fixed_parameters.constraints.dT_superheating.apply};
 
-% Condenser minimum temperature difference
-constraints_cell(k,1) = {'Cycle minimum pressure (bar)'};
-constraints_cell(k,2) = {p_min_constraint/1e5};
-constraints_cell(k,3) = {min(p_cycle)/1e5};
-constraints_cell(k,4) = {p_max_constraint/1e5};
-constraints_cell(k,5) = {fixed_parameters.constraints.pressure.apply}; k = k+1;
+% Cycle minimum pressure
+k = k+1;
+name(k)      = {'Cycle minimum pressure (bar)'};
+value(k)     = {min(p_cycle)/1e5};
+value_min(k) = {p_min_constraint/1e5};
+value_max(k) = {p_max_constraint/1e5};
+applied(k)   = {fixed_parameters.constraints.pressure.apply};
 
-% Condenser minimum temperature difference
-constraints_cell(k,1) = {'Cycle maximum pressure (bar)'};
-constraints_cell(k,2) = {p_min_constraint/1e5};
-constraints_cell(k,3) = {max(p_cycle)/1e5};
-constraints_cell(k,4) = {p_max_constraint/1e5};
-constraints_cell(k,5) = {fixed_parameters.constraints.pressure.apply};
+% Cycle maximum pressure
+k = k+1;
+name(k)      = {'Cycle maximum pressure (bar)'};
+value(k)     = {max(p_cycle)/1e5};
+value_min(k) = {p_min_constraint/1e5};
+value_max(k) = {p_max_constraint/1e5};
+applied(k)   = {fixed_parameters.constraints.pressure.apply};
 
-% Store the cell with constraint check
-cycle_data.optimization.check_constraints = constraints_cell;
+% Check if the bounds are satisfied and active
+N_var = length(value_min);
+for k = 1:N_var
+    
+    % No lower limit (the limit is minus infinity)
+    if isempty(value_min{k}) == 1
+        value_min_ = -inf;
+    else
+        value_min_ = value_min{k};
+    end
+
+    % No upper limit (the limit is plus infinity)
+    if isempty(value_max{k}) == 1
+        value_max_ = inf;
+    else 
+        value_max_ = value_max{k};
+    end
+    
+    % Check if the bounds are satisfied
+    if strcmp(applied{k},'yes')
+        if value{k}-value_min_ >= 0 && value_max_ - value{k} >= 0
+            satisfied(k) = {'yes'};
+        else
+            satisfied(k) = {'no'};
+        end
+    else
+        satisfied(k) = {[]};
+    end
+
+    % Check if the bounds are active
+    if strcmp(applied{k},'yes')
+        if abs(value{k}-value_min_) <= 1e-3 || abs(value_max_ - value{k}) <= 1e-3
+            active(k) = {'yes'};
+        else
+            active(k) = {'no'};
+        end
+    else
+        active(k) = {[]};
+    end
+end
+
+% Store cells as a structure
+constraint_summary.header    = header;
+constraint_summary.name      = name;
+constraint_summary.value     = value;
+constraint_summary.value_min = value_min;
+constraint_summary.value_max = value_max;
+constraint_summary.applied   = applied;
+constraint_summary.active    = active;
+constraint_summary.satisfied = satisfied;
+
+
+%% Store the optimization information into cycle_data structure
+cycle_data.optimization.x = x;
+cycle_data.optimization.lb = value_min;
+cycle_data.optimization.ub = value_max;
+cycle_data.optimization.c = c_ineq;
+cycle_data.optimization.c_eq = c_eq;
+cycle_data.optimization.bounds_summary = bounds_summary;
+cycle_data.optimization.constraint_summary = constraint_summary;
 
 
 end
