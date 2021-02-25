@@ -12,7 +12,7 @@ fixed_parameters.calc_detail = 'short';
 cycle_data = evaluate_rankine_cycle(x,fixed_parameters);
 
 % Save the current solution as a MATLAB data structure
-save(fullfile(fixed_parameters.results_path,['cycle_data_', num2str(iter), '.mat']),'cycle_data')
+save(fullfile(fixed_parameters.results_path,[fixed_parameters.project_name, '_', num2str(iter,'%02d'), '.mat']),'cycle_data')
 
 % Return a false stop flag
 stop = false;

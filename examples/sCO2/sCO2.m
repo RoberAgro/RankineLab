@@ -303,7 +303,7 @@ max_function_evals   = 10000;
 step_tolerance       = 1e-08;
 function_tolerance   = 1e-05;
 constraint_tolerance = 1e-05;
-optimality_tolerance = 1e-05;   
+optimality_tolerance = 1e-03;   
                                   
 % Description of the possible outputs of the optimization function
 %{
