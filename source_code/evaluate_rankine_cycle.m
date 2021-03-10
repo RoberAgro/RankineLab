@@ -175,26 +175,6 @@ end
 m_f = m_h*(h_1-h_2)/(h_7-h_6);        % Working fluid mass flow rate
 m_c = m_f*(h_9-h_4)/(h_12-h_11);      % Cooling fluid mass flow rate
 
-
-%% Compute the pinch point in the heat exchangers
-[dT_evap,T_evap_h,T_evap_c, ...
-         h_evap_h,h_evap_c, ...
-         p_evap_h,p_evap_c, ...
-         d_evap_h,d_evap_c, ...
-         s_evap_h,s_evap_c] = evaluate_exchanger(heating_fluid,working_fluid,m_h,m_f,p_2,p_1,p_6,p_7,h_2,h_1,h_6,h_7,N_evap,calc_detail);
-
-[dT_cond,T_cond_h,T_cond_c, ...
-         h_cond_h,h_cond_c, ...
-         p_cond_h,p_cond_c, ...
-         d_cond_h,d_cond_c, ...
-         s_cond_h,s_cond_c] = evaluate_exchanger(working_fluid,cooling_fluid,m_f,m_c,p_4,p_9,p_11,p_12,h_4,h_9,h_11,h_12,N_cond,calc_detail);
-
-[dT_rec,T_rec_h,T_rec_c, ...
-         h_rec_h,h_rec_c, ...
-         p_rec_h,p_rec_c, ...
-         d_rec_h,d_rec_c, ...
-         s_rec_h,s_rec_c] = evaluate_exchanger(working_fluid,working_fluid,m_f,m_f,p_9,p_8,p_5,p_6,h_9,h_8,h_5,h_6,N_rec,calc_detail);
-
         
 %%  Dead states
 h_h0 = prop_calculation('H','T',T_0,'P',p_0,heating_fluid);
@@ -275,6 +255,32 @@ eta_1max      = Ex_h_in/E_h_in;
 % Check exergy computations
 exergy_check = [Ex_h_in, -Ex_h_out, Ex_c_in, -Ex_c_out, W_pump_h, W_pump_f, W_pump_c, -W_exp, -I_exp, -I_pump_h, -I_pump_f, -I_pump_c, -I_evap, -I_cond, -I_rec]/Ex_h_in;
 exergy_error = sum(exergy_check);
+
+
+%% Compute the pinch point in the heat exchangers
+[dT_evap,T_evap_h,T_evap_c, ...
+         h_evap_h,h_evap_c, ...
+         p_evap_h,p_evap_c, ...
+         d_evap_h,d_evap_c, ...
+         s_evap_h,s_evap_c] = evaluate_exchanger(heating_fluid,working_fluid,m_h,m_f,p_2,p_1,p_6,p_7,h_2,h_1,h_6,h_7,N_evap,calc_detail);
+
+[dT_cond,T_cond_h,T_cond_c, ...
+         h_cond_h,h_cond_c, ...
+         p_cond_h,p_cond_c, ...
+         d_cond_h,d_cond_c, ...
+         s_cond_h,s_cond_c] = evaluate_exchanger(working_fluid,cooling_fluid,m_f,m_c,p_4,p_9,p_11,p_12,h_4,h_9,h_11,h_12,N_cond,calc_detail);
+
+[dT_rec,T_rec_h,T_rec_c, ...
+         h_rec_h,h_rec_c, ...
+         p_rec_h,p_rec_c, ...
+         d_rec_h,d_rec_c, ...
+         s_rec_h,s_rec_c] = evaluate_exchanger(working_fluid,working_fluid,m_f,m_f,p_9,p_8,p_5,p_6,h_9,h_8,h_5,h_6,N_rec,calc_detail);
+
+     
+%% Compute the UA-values of the heat exchangers
+UA_evap = Q_evap/sum(T_evap_h-T_evap_c);
+UA_cond = Q_cond/sum(T_cond_h-T_cond_c);
+UA_rec  = Q_rec/sum(T_rec_h-T_rec_c);
 
 
 %% Evaluate the optimization problem constraints     
@@ -576,6 +582,7 @@ cycle_data.pump_c.N = length(p_pump_c);
 cycle_data.pump_c.eta = eta_pump_c;
 
 % Evaporator thermodynamic trajectory
+cycle_data.evaporator.N = N_evap;
 cycle_data.evaporator.p_h = p_evap_h;
 cycle_data.evaporator.p_c = p_evap_c;
 cycle_data.evaporator.T_h = T_evap_h;
@@ -586,10 +593,11 @@ cycle_data.evaporator.d_h = d_evap_h;
 cycle_data.evaporator.d_c = d_evap_c;
 cycle_data.evaporator.s_h = s_evap_h;
 cycle_data.evaporator.s_c = s_evap_c;
-cycle_data.evaporator.dT = dT_evap;
-cycle_data.evaporator.N = N_evap;
+cycle_data.evaporator.dT_min = min(dT_evap);
+cycle_data.evaporator.UA = UA_evap;
 
 % Condenser thermodynamic trajectory
+cycle_data.condenser.N = N_cond;
 cycle_data.condenser.p_h = p_cond_h;
 cycle_data.condenser.p_c = p_cond_c;
 cycle_data.condenser.T_h = T_cond_h;
@@ -600,10 +608,11 @@ cycle_data.condenser.d_h = d_cond_h;
 cycle_data.condenser.d_c = d_cond_c;
 cycle_data.condenser.s_h = s_cond_h;
 cycle_data.condenser.s_c = s_cond_c;
-cycle_data.condenser.dT = dT_cond;
-cycle_data.condenser.N = N_cond;
+cycle_data.condenser.dT_min = min(dT_cond);
+cycle_data.condenser.UA = UA_cond;
 
 % Recuperator thermodynamic trajectory
+cycle_data.recuperator.N = N_rec;
 cycle_data.recuperator.p_h = p_rec_h;
 cycle_data.recuperator.p_c = p_rec_c;
 cycle_data.recuperator.T_h = T_rec_h;
@@ -614,8 +623,8 @@ cycle_data.recuperator.d_h = d_rec_h;
 cycle_data.recuperator.d_c = d_rec_c;
 cycle_data.recuperator.s_h = s_rec_h;
 cycle_data.recuperator.s_c = s_rec_c;
-cycle_data.recuperator.dT = dT_rec;
-cycle_data.recuperator.N = N_rec;
+cycle_data.recuperator.dT_min = min(dT_rec);
+cycle_data.recuperator.UA = UA_rec;
 
 % Fluid properties
 cycle_data.properties.p_0 = p_0;

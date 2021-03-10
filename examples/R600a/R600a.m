@@ -29,10 +29,10 @@ end
 %% Define the thermodynamic specifications and cycle parameters
 % Ambient state
 p_0 = 101325;                                                              % Ambient pressure
-T_0 = 10+273.15;                                                           % Ambient temperature
+T_0 = 15+273.15;                                                           % Ambient temperature
 
 % Define the working fluids
-heating_fluid = 'HEOS::Air';
+heating_fluid = 'HEOS::Water';
 working_fluid = 'HEOS::Isobutane';
 cooling_fluid = 'HEOS::Water';
 
@@ -73,17 +73,17 @@ If all of these fail, you are out of luck...
 
 % Define the thermodynamic specifications of the heat source
 m_h = 1.00;                                                                % Heat source mass flow rate (kg/s). This variable "scales-up" the problem
-T_1 = 150+273.15;                                                          % Heat source inlet temperature (K)
-p_1 = p_0;                                                                 % Heat source inlet pressure (Pa)
-p_3 = p_0;                                                                 % Heat source outlet pressure (Pa)
-T_3min = 80+273.15;                                                        % Minimum temperature at the outlet of the heat source (K)
+T_1 = 120+273.15;                                                          % Heat source inlet temperature (K)
+p_1 = 3*p_0;                                                                 % Heat source inlet pressure (Pa)
+p_3 = 3*p_0;                                                                 % Heat source outlet pressure (Pa)
+T_3min = 75+273.15;                                                        % Minimum temperature at the outlet of the heat source (K)
 T_3max = T_1;                                                              % Maximum temperature at the outlet of the heat source (K)
 
 % Define the thermodynamic specifications of the heat sink
-T_10 = T_0;                                                                % Heat sink inlet temperature (K)
+T_10 = 10+273.15;                                                                % Heat sink inlet temperature (K)
 p_10 = p_0;                                                                % Heat sink inlet pressure (Pa)
 p_12 = p_0;                                                                % Heat sink outlet pressure (Pa)
-T_12min = T_0+10;                                                          % Minimum temperature at the outlet of the heat sink (K)
+T_12min = 10+273.15+10;                                                          % Minimum temperature at the outlet of the heat sink (K)
 T_12max = T_0+20;                                                          % Maximum temperature at the outlet of the heat sink (K)
 
 % Define pressure drops in the heat exchangers (% of the inlet pressure)
@@ -101,12 +101,12 @@ N_cond = 50;                                                               % Cho
 N_rec  = 50;                                                               % Choose an integer
 
 % Define the efficiency of the pumps
-eta_pump_h = 0.80;                                                         % Isentropic efficiency of the heat source pump
-eta_pump_f = 0.80;                                                         % Isentropic efficiency of the working fluid pump
-eta_pump_c = 0.80;                                                         % Isentropic efficiency of the heat sink pump
+eta_pump_h = 0.70;                                                         % Isentropic efficiency of the heat source pump
+eta_pump_f = 0.70;                                                         % Isentropic efficiency of the working fluid pump
+eta_pump_c = 0.70;                                                         % Isentropic efficiency of the heat sink pump
 
 % Define the efficiency of the expander
-eta_expander = 0.85;                                                       % Efficiency of the expander
+eta_expander = 0.70;                                                       % Efficiency of the expander
 
 % Turbomachinery efficiency definition
 pump_efficiency_definition = 'isentropic';                                 % Definition of the pump efficiency: 'isentropic' or 'polytropic'
@@ -276,13 +276,13 @@ constraints.dT_subcooling.max = [];
 constraints.dT_subcooling.apply = 'yes';
 
 % Degree of superheating at inlet of the expander (subcritical cycles)
-constraints.dT_superheating.min = 10;
+constraints.dT_superheating.min = 5;
 constraints.dT_superheating.max = [];
 constraints.dT_superheating.apply = 'yes';
 
 % Maximum cycle pressure
-constraints.pressure.min = [];
-constraints.pressure.max = 20e5;
+constraints.pressure.min = 1.5e5;
+constraints.pressure.max = 15e5;
 constraints.pressure.apply = 'yes';
 
 
